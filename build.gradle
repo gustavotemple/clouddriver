@@ -104,10 +104,20 @@ subprojects {
   }
 
   tasks.withType(JavaExec) {
+    jvmArgs '-XX:+PreserveFramePointer',
+      '-XX:+UnlockDiagnosticVMOptions',
+      '-XX:+DebugNonSafepoints',
+      '-XX:+HeapDumpOnOutOfMemoryError'
+
     if (System.getProperty('DEBUG', 'false') == 'true') {
-      jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7102'
+      jvmArgs '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=7102',
+        '-XX:+PreserveFramePointer',
+        '-XX:+UnlockDiagnosticVMOptions',
+        '-XX:+DebugNonSafepoints',
+        '-XX:+HeapDumpOnOutOfMemoryError'
     }
   }
+
 }
 
 defaultTasks ':clouddriver-web:run'

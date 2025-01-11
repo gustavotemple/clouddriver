@@ -5,14 +5,74 @@ server:
   compression:
     enabled: true
 
+account:
+  storage:
+    enabled: true
+
+credentials:
+  poller:
+    enabled: false
+    types:
+      kubernetes:
+        reloadFrequencyMs: 60000
+
+sql:
+  enabled: true
+  # read-only boolean toggles `SELECT` or `DELETE` health checks for all pools.
+  # Especially relevant for clouddriver-ro and clouddriver-ro-deck which can
+  # target a SQL read replica in their default pools.
+  read-only: false
+  taskRepository:
+    enabled: true
+  cache:
+    enabled: false
+  scheduler:
+    enabled: false
+  # Enable clouddriver-caching's clean up agent to periodically purge old
+  # clusters and accounts. Set to true when using the Kubernetes provider.
+  unknown-agent-cleanup-agent:
+    enabled: false
+  connectionPools:
+    default:
+      # additional connection pool parameters are available here,
+      # for more detail and to view defaults, see:
+      # https://github.com/spinnaker/kork/blob/master/kork-sql/src/main/kotlin/com/netflix/spinnaker/kork/sql/config/ConnectionPoolProperties.kt
+      default: true
+      #jdbcUrl: jdbc:mysql://mysql:3306/clouddriver?useSSL=false&useUnicode=true&characterEncoding=utf8
+      jdbcUrl: jdbc:mysql://127.0.0.1:3306/clouddriver?useSSL=false&useUnicode=true&characterEncoding=utf8
+      user: root #clouddriver #root
+      password: root #clouddriver #root
+      # password: depending on db auth and how spinnaker secrets are managed
+
+  migration:
+    user: root #clouddriver #root
+    password: root #clouddriver #root
+    #jdbcUrl: jdbc:mysql://mysql:3306/clouddriver?useSSL=false&useUnicode=true&characterEncoding=utf8
+    jdbcUrl: jdbc:mysql://127.0.0.1:3306/clouddriver?useSSL=false&useUnicode=true&characterEncoding=utf8
+
 redis:
+  enabled: false
+  cache:
+    enabled: false
+  scheduler:
+    enabled: false
+  taskRepository:
+    enabled: false
+  #connection: ${services.redis.baseUrl:redis://redis:6379}
   connection: ${services.redis.baseUrl:redis://localhost:6379}
-  scheduler: default
   parallelism: -1
+
+dualTaskRepository:
+  enabled: false
+  primaryClass: com.netflix.spinnaker.clouddriver.sql.SqlTaskRepository
+  previousClass: com.netflix.spinnaker.clouddriver.data.task.jedis.RedisTaskRepository
 
 services:
   front50:
     baseUrl: http://localhost:8080
+  fiat:
+    enabled: false
+    baseUrl: http://localhost:7003
 
 management.health.elasticsearch.enabled: false
 
@@ -45,6 +105,38 @@ swagger:
     - .*job.*
     - .*process.*
     - .*dcos.*
+    - .*tasks.*
+    - .*auth.*
+    - .*applications.*
+    - .*securityGroups.*
+    - /search
+    - .*pipeline.*
+    - .*pipelineConfigs.*
+    - .*pipelines.*
+    - .*loadBalancers.*
+    - .*instances.*
+    - .*images.*
+    - .*credentials.*
+    - .*events.*
+    - .*builds.*
+    - .*instanceTypes.*
+    - .*bakery.*
+    - .*executions.*
+    - .*webhooks.*
+    - .*firewalls.*
+    - .*version.*
+    - .*pubsub.*
+    - .*projects.*
+    - .*functions.*
+    - .*managed.*
+    - .*plugins.*
+    - /default/.*
+    - /credentials.*
+    - /global/.*
+    - /notifications.*
+    - /pipelines.*
+    - /strategies.*
+    - /v2/.*
 
 default:
   # legacyServerPort is a non-ssl listener, if ssl is enabled. -1 to disable
@@ -53,7 +145,7 @@ default:
     env: default
 
 aws:
-  enabled: ${AWS_ENABLED:false}
+  enabled: false
 #  features:
 #    launch-templates:
 #      enabled: true
@@ -92,7 +184,7 @@ aws:
   accounts: []
 
 azure:
-  enabled: ${AZURE_ENABLED:false}
+  enabled: false
   defaults:
 
   accounts:
@@ -253,18 +345,18 @@ google:
         sizeGb: 10
 
 kubernetes:
-  enabled: false
+  enabled: true
   v2:
     applyAppLabels: true
 
 dockerRegistry:
-  enabled: ${DOCKER_REGISTRY_ENABLED:false}
+  enabled: false
 
 dcos:
   enabled: false
 
 cf:
-  enabled: ${providers.cf.enabled:false}
+  enabled: false
   accounts:
     - name: ${providers.cf.primaryCredentials.name}
       api: ${providers.cf.primaryCredentials.api}
@@ -277,7 +369,7 @@ cf:
       artifactPassword: ${cf.repo.password}
 
 oracle:
-  enabled: ${ORACLE_ENABLED:false}
+  enabled: false
 
 spring:
   jackson:
@@ -349,6 +441,9 @@ spring:
 spring:
   profiles: local
 
+aws:
+  enabled: false
+
 # an AWSCredentialsProvider that obtains session credentials via SSH through a bastion instance (useful for local development):
 #bastion:
 #  enabled: false
@@ -368,6 +463,9 @@ redis:
 caching:
   writeEnabled: false
 
+aws:
+  enabled: false
+
 ---
 # This profile is used in HA deployments for a clouddriver that handles mutating requests from
 # other services, but does not run caching agents
@@ -376,3 +474,6 @@ spring:
 
 caching:
   writeEnabled: false
+
+aws:
+  enabled: false
