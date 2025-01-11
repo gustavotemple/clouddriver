@@ -1,0 +1,422 @@
+{
+	"info": {
+		"_postman_id": "cbb1c664-3a5f-4101-a6ab-b82a5c111c14",
+		"name": "Clouddriver",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "6978248"
+	},
+	"item": [
+		{
+			"name": "create-account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Extrair o ID da resposta",
+							"const responseJson = pm.response.json();",
+							"const name = responseJson.name;",
+							"",
+							"// Definir a variavel na coleção",
+							"pm.collectionVariables.set(\"account\", name);",
+							"",
+							"pm.test(\"200 OK\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"type\": \"{{provider}}\",\n    \"name\": \"{{$randomUUID}}\",\n    \"permissions\": {\"READ\":[\"my-group\"], \"WRITE\":[\"my-group\"]},\n    \"context\": \"eks\",\n    \"namespaces\": [\n        \"default\"\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{url}}:7002/credentials",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "7002",
+					"path": [
+						"credentials"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "account-history",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 OK\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{url}}:7002/credentials/:accountName/history",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "7002",
+					"path": [
+						"credentials",
+						":accountName",
+						"history"
+					],
+					"variable": [
+						{
+							"key": "accountName",
+							"value": "{{account}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "accounts-by-type",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 OK\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "http://{{url}}:7002/credentials/type/{{provider}}?limit=100",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "7002",
+					"path": [
+						"credentials",
+						"type",
+						"{{provider}}"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "100"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete-account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 OK\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "http://{{url}}:7002/credentials/:account",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "7002",
+					"path": [
+						"credentials",
+						":account"
+					],
+					"variable": [
+						{
+							"key": "account",
+							"value": "{{account}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create-task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Extrair o ID da resposta",
+							"const responseJson = pm.response.json();",
+							"const id = responseJson.id;",
+							"",
+							"// Definir a variavel na coleção",
+							"pm.collectionVariables.set(\"task\", id);",
+							"",
+							"pm.test(\"200 OK\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "[{}]"
+				},
+				"url": {
+					"raw": "http://{{url}}:7002/{{provider}}/ops",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "7002",
+					"path": [
+						"{{provider}}",
+						"ops"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "one-task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 OK\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{url}}:7002/task/:task",
+					"protocol": "http",
+					"host": [
+						"{{url}}"
+					],
+					"port": "7002",
+					"path": [
+						"task",
+						":task"
+					],
+					"variable": [
+						{
+							"key": "task",
+							"value": "{{task}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "task-owner",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 OK\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					}
+				],
+				"url": {
+					"raw": "http://127.0.0.1:7002/{{provider}}/task/{{task}}/owner",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "7002",
+					"path": [
+						"{{provider}}",
+						"task",
+						"{{task}}",
+						"owner"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "retry-task",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"200 OK\", function () {",
+							"  pm.response.to.have.status(200);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "accept",
+						"value": "*/*"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"retry\": {{$randomBoolean}}\n}"
+				},
+				"url": {
+					"raw": "http://127.0.0.1:7002/{{provider}}/task/{{task}}",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "7002",
+					"path": [
+						"{{provider}}",
+						"task",
+						"{{task}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "localhost",
+			"type": "string"
+		},
+		{
+			"key": "account",
+			"value": "account-1",
+			"type": "string"
+		},
+		{
+			"key": "task",
+			"value": "task-1",
+			"type": "string"
+		},
+		{
+			"key": "provider",
+			"value": "kubernetes",
+			"type": "string"
+		}
+	]
+}
