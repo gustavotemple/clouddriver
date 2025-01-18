@@ -1,0 +1,18 @@
+{
+  "simulation": "gatling.GatlingTest",
+  "simulationId": "gatlingtest-20231011191025041",
+  "start": 1697051426319,
+  "description": "",
+  "scenarios": ["clouddriver-test"],
+  "assertions": [
+{
+  "path": "Global",
+  "target": "percentage of successful events",
+  "condition": "is greater than or equal to",
+  "expectedValues": [99.0],
+  "result": true,
+  "message": "Global: percentage of successful events is greater than or equal to 99.0",
+  "actualValue": [100.0]
+}
+  ]
+}

@@ -1,0 +1,5 @@
+<testsuite name="gatling.GatlingTest" tests="1" errors="0" failures="0" time="0">
+<testcase name="Global: percentage of successful events is greater than or equal to 99.0" status="true" time="0">
+  <system-out>Global: percentage of successful events is greater than or equal to 99.0</system-out>
+</testcase>
+</testsuite>
