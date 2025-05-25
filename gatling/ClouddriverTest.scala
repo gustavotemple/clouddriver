@@ -23,11 +23,11 @@ class ClouddriverTest extends Simulation {
   private val patchRetryTaskRequest = "PATCH retry-task (hotspot)"
 
   private val circularAccountValues = Array(
-    Map("account" -> "00414d9f-c95b-45c2-99a2-614536e08441"),
-    Map("account" -> "00689a84-1e87-492b-8174-496cf99eb300"),
-    Map("account" -> "007a3bca-c3c6-407f-83a8-28793fe586f8"),
-    Map("account" -> "00841eb6-1528-4720-a9fb-3b43b8757528"),
-    Map("account" -> "009beba0-9e1f-4ae7-a17e-6f86b7fa988d"),
+    Map("account" -> "092fe289-857f-408c-a64d-eef8c3bbc86b"),
+    Map("account" -> "0b87d50e-0170-4fde-8b37-8b86aa050f40"),
+    Map("account" -> "16cf7e19-526f-43a0-b42c-4e70417bdec2"),
+    Map("account" -> "d9c301ff-7a4d-46d7-9471-4c065f3e1c3b"),
+    Map("account" -> "fc68523b-4634-43f4-b865-2dd804008e92"),
   ).circular
 
   private val postCreateAccount =
@@ -65,11 +65,11 @@ class ClouddriverTest extends Simulation {
       .check(status.is(200))
 
   private val circularTaskValues = Array(
-    Map("task" -> "01HCFT0KK2EGMSZQ1XZYGTT0E8"),
-    Map("task" -> "01HCFT0S1ZYNNN1SG1XJKMS0F2"),
-    Map("task" -> "01HCFT0YC1GTPY33ZH1PYDN3Z6"),
-    Map("task" -> "01HCFT13W60899TP78EN36TS8T"),
-    Map("task" -> "01HCFT195H8XSE1HAX6Q93PFEP"),
+    Map("task" -> "01JW2CXXCPFJ8VK4HH1GJE4SB3"),
+    Map("task" -> "01JW2CXY9D8APDK1Q653TS757D"),
+    Map("task" -> "01JW2CXZ0AYX11QPA8W00GM51Z"),
+    Map("task" -> "01JW2CXZR3TQ1ZMF2RXKJBHRNY"),
+    Map("task" -> "01JW2CY0FJQ76E1P55RKSHH9PN"),
   ).circular
 
   private val postCreateTask =
@@ -120,6 +120,7 @@ class ClouddriverTest extends Simulation {
         })
         .feed(circularAccountValues)
         .exec(postCreateAccount)
+        //.pause(1)
         .exec(getAccountHistory)
         .exec(getAccountsByType)
         .exec(delAccount)
@@ -130,6 +131,7 @@ class ClouddriverTest extends Simulation {
       })
         .feed(circularTaskValues)
         .exec(postCreateTask)
+        //.pause(1)
         .exec(getOneTask)
         .exec(getTaskOwner)
         .feed(circularRetryValues)
@@ -153,3 +155,8 @@ class ClouddriverTest extends Simulation {
 
 // sbt clean compile
 // sbt "gatling:testOnly gatling.ClouddriverTest"
+
+//1) no-both (create/retry) -> fast
+//2) no-create-task
+//3) no-retry-task
+//4) baseline/all -> slow
